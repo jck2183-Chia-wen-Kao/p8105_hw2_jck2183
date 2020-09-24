@@ -1,0 +1,33 @@
+---
+title: "P8105_HW2_jck2183"
+output: github_document
+---
+
+```{r setup}
+library(tidyverse)
+library(readxl)
+```
+
+## Problem 1
+
+1. Assign a variable to a path of the dataset. 
+
+```{r}
+data_path <- "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx"
+```
+
+Read the Mr. Trashwheel dataset.
+
+```{r}
+trashwheel_df <- read_xlsx(
+    path = data_path, 
+    sheet = "Mr. Trash Wheel",
+		range = cell_cols("A:N")) %>% 
+	janitor::clean_names() %>% 
+	drop_na(dumpster) %>% 
+	mutate(
+		sports_balls = round(sports_balls),
+		sports_balls = as.integer(sports_balls)
+	)
+```
+
