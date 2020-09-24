@@ -43,5 +43,32 @@ precip_2018 <-
 	drop_na(month) %>% 
 	mutate(year = 2018) %>% 
 	relocate(year)
+
+precip_2017 <- 
+	read_excel(
+		path = data_path,
+		sheet = "2017 Precipitation",
+		skip = 1
+	) %>% 
+	janitor::clean_names() %>% 
+	drop_na(month) %>% 
+	mutate(year = 2017) %>% 
+	relocate(year)
 ```
+
+Combine annual precipitation.
+
+```{r}
+month_df <- 
+	tibble(
+		month = 1:12,
+		month_name = month.name
+	)
+
+precip_df <- 
+	bind_rows(precip_2018, precip_2017)
+
+left_join(precip_df, month_df, by = "month")
+```
+
 
