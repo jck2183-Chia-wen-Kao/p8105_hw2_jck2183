@@ -87,3 +87,68 @@ Write a paragraph about these data; you are encouraged to use inline R. Be sure 
 
 Problem 2
 
+Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or recode function may be useful).
+
+```{r}
+prb2_path <- "./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv"
+
+prb2_df <- read_csv(prb2_path) %>% 
+    janitor::clean_names() %>%
+    select(c(line:ada), -c(exit_only, staffing, staff_hours)) %>% mutate(entry = recode(entry, 
+                         `YES` = TRUE,
+                         `NO` = FALSE))
+
+dim(prb2_df)
+```
+Write a short paragraph about this dataset – explain briefly what variables the dataset contains, describe your data cleaning steps so far, and give the dimension (rows x columns) of the resulting dataset. Are these data tidy?
+
+```{r}
+# The dataset, after reading and cleaning,contains only 19 variables : line, station_name, station_latitude / longitude, 11 routes served, entry, vending, entrance type, and ADA compliance.The dimension of the resulting dataset includes 1868 rows x 19 columns. The data is tidy as the resulting dataset is arranged such that each variable is a column and each observation is a row.
+```
+
+Answer the following questions using these data:
+
+1.How many distinct stations are there? Note that stations are identified both by name and by line (e.g. 125th St A/B/C/D; 125st 1; 125st 4/5); the distinct function may be useful here.
+```{r}
+prb2_1_df <- prb2_df %>% 
+    distinct(station_name,line, .keep_all = TRUE) 
+# There are 465 distinct rows in the resulting data frame, indicating that there are 465 distinct stations identified by both name and by line.  
+```
+
+2.How many stations are ADA compliant?
+
+```{r}
+prb2_1_df %>% 
+    filter(ada = TRUE) %>% 
+    count(ada)
+#There are 84 stations are ADA compliant based on previous resulting data.
+```
+
+
+3.What proportion of station entrances / exits without vending allow entrance?
+
+```{r}
+prb2_path <- "./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv"
+
+prb2_3_df <- read_csv(prb2_path) %>% 
+    janitor::clean_names() %>%
+    mutate(entry = recode(entry, 
+                         `YES` = TRUE,
+                         `NO` = FALSE)) %>% 
+    distinct(station_name,line, .keep_all = TRUE) %>% 
+        filter(vending == "NO")
+
+# The proportion of station entrances / exits without vending allow entrance is equal to 5/4 (?) = 1.25 or 5/2 =2.5 (?) 
+```
+Reformat data so that route number and route name are distinct variables. How many distinct stations serve the A train? Of the stations that serve the A train, how many are ADA compliant?
+
+```{r}
+ref_prb2_df <- prb2_df %>% 
+    select(-c(station_latitude, station_longitude, entrance_type, entry, vending)) %>% 
+    distinct(station_name,line, .keep_all = TRUE) %>% 
+    gather(Route_Name, Route_Number, route1:route11) %>% 
+    filter(`Route_Number` == "A" & `ada` == "TRUE")
+
+#There are 17 distinct stations that serve the A train and are ADA compliant.
+```
+
