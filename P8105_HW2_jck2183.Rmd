@@ -29,6 +29,11 @@ trashwheel_df <- read_xlsx(
 		sports_balls = round(sports_balls),
 		sports_balls = as.integer(sports_balls)
 	)
+
+median_2017 <- trashwheel_df %>% 
+    filter(year == 2017) 
+
+median(median_2017$sports_balls)
 ```
 
 Read precipitation data! For 2018 and 2017.
@@ -42,7 +47,10 @@ precip_2018 <-
 	janitor::clean_names() %>% 
 	drop_na(month) %>% 
 	mutate(year = 2018) %>% 
-	relocate(year)
+	relocate(year) 
+    
+
+sum(precip_2018$total)
 
 precip_2017 <- 
 	read_excel(
@@ -70,5 +78,12 @@ precip_df <-
 
 left_join(precip_df, month_df, by = "month")
 ```
+Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in both resulting datasets, and give examples of key variables. For available data, what was the total precipitation in 2018? What was the median number of sports balls in a dumpster in 2017?
 
+```{r}
+# The trashwheel data frame contains 344 observations of 14 variables.The 2017 precipitation contains 12 observations of 3 variables and so does 2018 precipitation. The key variables can be the month or the year. In this practice, we used month as key variable. The total precipitation in 2018 is 70.33 while the median number of sports balls in a dumpster in 2017 is 8.
+```
+
+
+Problem 2
 
